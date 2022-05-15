@@ -21,7 +21,7 @@ public class Game {
 			}
 		}
 
-		this.inventory = new ArrayList<>(Arrays.asList("Cruiser", "Submarine", "Battleship", "Carrier"));
+		this.inventory = new ArrayList<>(Arrays.asList("Destroyer", "Cruiser", "Submarine", "Battleship", "Carrier"));
 	}
 
 	public char[][] getMap(){return this.map;};
