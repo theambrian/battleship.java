@@ -8,14 +8,14 @@ public abstract class Ship {
 								// up/down/left/right
 	private String name;
 
-	public Ship(int length, int[] start, String orientation, String name){
+	public Ship(int length, int row, int col, String orientation, String name){
 
 		this.body = new HashMap<>();
 		for(int i = 0; i < length; i++){
 			this.body.put(i, true);
 		}
 
-		this.start = start;
+		this.start = new int[]{row, col};
 		this.orientation = orientation;
 		this.name = name;
 	}

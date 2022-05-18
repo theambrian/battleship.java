@@ -2,7 +2,7 @@ package GameElements.Ships;
 import GameElements.Ship;
 
 public class Cruiser extends Ship{
-	public Cruiser(int[] start, String orientation){
-		super(3, start, orientation, "Cruiser");
+	public Cruiser(int row, int col, String orientation){
+		super(3, row, col, orientation, "Cruiser");
 	}
 }

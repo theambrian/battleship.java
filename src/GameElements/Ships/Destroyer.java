@@ -4,8 +4,8 @@ import GameElements.Ship;
 
 public class Destroyer extends Ship{
 
-	public Destroyer(int[] start, String orientation){
-		super(2, start, orientation, "Destroyer");
+	public Destroyer(int row, int col, String orientation){
+		super(2, row, col, orientation, "Destroyer");
 	}
 
 

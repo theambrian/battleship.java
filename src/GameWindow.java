@@ -20,6 +20,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		this.setLocation(150, 100);
 		this.setPreferredSize(new Dimension(400, 500));
 		this.setMinimumSize(new Dimension(100, 125));
+		this.setResizable(false);
 
 		player1Game = new Game();
 		player1Game.addShip(new Cruiser(new int[]{1, 3}, "right"));
@@ -48,7 +49,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		cons.fill = GridBagConstraints.HORIZONTAL;
 		cons.weighty = 0.5;
 		cons.weightx = 0.5;
-		cons.insets = new Insets(2, 3, 2, 3);
+		cons.insets = new Insets(5,5,5,5);
 
 		Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 
@@ -84,7 +85,29 @@ public class GameWindow extends JFrame implements ActionListener {
 			playPanel.add(myMapPanel, cons);
 		}
 
-			return playPanel;
+		//make buttons and text input
+		{
+			JPanel inputPanel = new JPanel();
+
+			JTextField coordinateTextField = new JTextField("Enter target:");
+			coordinateTextField.setSize(new Dimension(60, 10));
+			coordinateTextField.setActionCommand("shot coordinate");
+			inputPanel.add(coordinateTextField);
+			
+			JButton coordinateButton = new JButton("Shoot");
+			coordinateButton.setSize(new Dimension(25,10));
+			inputPanel.add(coordinateButton);
+
+			JButton endTurnButton = new JButton("End Turn");
+			endTurnButton.setSize(new Dimension(10, 10));
+			inputPanel.add(endTurnButton);
+
+			cons.gridx = 0; cons.gridy = 2;
+			playPanel.add(inputPanel, cons);
+		}
+
+
+		return playPanel;
 	}
 
 

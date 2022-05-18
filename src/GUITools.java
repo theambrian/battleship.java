@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GUITools {
-	public GUITools(){}
-
 	public static JLabel setMapColors(JLabel original){
 		final char water = '~';
 		final char hit = 'x';
@@ -31,5 +29,6 @@ public class GUITools {
 				return original;
 			}
 		}
+
 	}
 }
