@@ -47,25 +47,25 @@ public class Game {
 
 		switch (orientation) {
 			case "up" -> {
-				if (length - start[1] < 0) return false;
+				if (length - start[0] < 0) return false;
 				for (int i = 0; i < length; i++) {
 					this.myMap[start[0] - i][start[1]] = ship;
 				}
 			}
 			case "down" -> {
-				if (length + start[1] > 9) return false;
+				if (length + start[0] > 9) return false;
 				for (int i = 0; i < length; i++) {
 					this.myMap[start[0] + i][start[1]] = ship;
 				}
 			}
 			case "left" -> {
-				if (length - start[0] > 0) return false;
+				if (length - start[1] > 0) return false;
 				for (int i = 0; i < length; i++) {
 					this.myMap[start[0]][start[1] - i] = ship;
 				}
 			}
 			case "right" -> {
-				if (length + start[0] > 9) return false;
+				if (length + start[1] > 9) return false;
 				for (int i = 0; i < length; i++) {
 					this.myMap[start[0]][start[1] + i] = ship;
 				}

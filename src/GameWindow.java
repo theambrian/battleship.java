@@ -24,8 +24,9 @@ public class GameWindow extends JFrame implements ActionListener {
 		player1Game = new Game();
 		player1Game.addShip(new Cruiser(new int[]{1, 3}, "right"));
 		player1Game.addShip(new Cruiser(new int[]{1, 1}, "down"));
-		player1Game.addShip(new Destroyer(new int[]{4, 4}, "left"));
-		player1Game.addShip(new Carrier(new int[]{5, 4}, "right"));
+		player1Game.addShip(new Destroyer(new int[]{4, 8}, "left"));
+		player1Game.addShip(new Submarine(new int[]{0, 0}, "right"));
+		player1Game.addShip(new Carrier(new int[]{5, 2}, "right"));
 		player2Game = new Game();
 
 		playPanel = makePlayPanel();
@@ -65,9 +66,11 @@ public class GameWindow extends JFrame implements ActionListener {
 			for (int row = 0; row < 10; row++) {
 				for (int col = 0; col < 10; col++) {
 					myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
+					myMap[row][col] = GUITools.setMapColors(myMap[row][col]);
 					myMapPanel.add(myMap[row][col]);
 
 					enemyMap[row][col] = new JLabel(String.valueOf(enemyMapGame[row][col]));
+					enemyMap[row][col] = GUITools.setMapColors(enemyMap[row][col]);
 					enemyMapPanel.add(enemyMap[row][col]);
 
 				}
