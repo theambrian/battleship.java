@@ -4,27 +4,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Game {
-	char[][] map;
+	char[][] myMap; //player's ships. bottom of battleship board
+	char[][] enemyMap; //what the player knows about enemy's ship. top of battleship board.
 	char water = '~';
 	char hit = 'x';
 	char miss = 'o';
 	char ship = '^';
-
-	private ArrayList<String> inventory;
-
+	int health; //total health of player's ships.
 
 	public Game() {
-		this.map = new char[10][10];
+		this.myMap = new char[10][10];
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
-				this.map[row][col] = water;
+				this.myMap[row][col] = water;
 			}
 		}
 
-		this.inventory = new ArrayList<>(Arrays.asList("Destroyer", "Cruiser", "Submarine", "Battleship", "Carrier"));
+		this.enemyMap = new char[10][10];
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				this.enemyMap[row][col] = water;
+			}
+		}
+
+		this.health = 17;
 	}
 
-	public char[][] getMap(){return this.map;};
+	public char[][] getMyMap(){return this.myMap;}
+	public char[][] getEnemyMap(){return this.enemyMap;}
+	public int getHealth(){return this.health;}
+	public void setMyMap(int[] location, char newStatus){
+		this.myMap[location[0]][location[1]] = newStatus;
+	}
+	public void setEnemyMap(int[] location, char newStatus){this.enemyMap[location[0]][location[1]] = newStatus;}
+	public void takeHealth(){this.health--;}
 
 	public boolean addShip(Ship newShip){
 		String orientation = newShip.getOrientation();
@@ -36,35 +49,45 @@ public class Game {
 			case "up" -> {
 				if (length - start[1] < 0) return false;
 				for (int i = 0; i < length; i++) {
-					this.map[start[0] - i][start[1]] = '^';
+					this.myMap[start[0] - i][start[1]] = ship;
 				}
-				this.inventory.remove(name);
 			}
 			case "down" -> {
 				if (length + start[1] > 9) return false;
 				for (int i = 0; i < length; i++) {
-					this.map[start[0] + i][start[1]] = '^';
+					this.myMap[start[0] + i][start[1]] = ship;
 				}
-				this.inventory.remove(name);
 			}
 			case "left" -> {
 				if (length - start[0] > 0) return false;
 				for (int i = 0; i < length; i++) {
-					this.map[start[0]][start[1] - i] = '^';
+					this.myMap[start[0]][start[1] - i] = ship;
 				}
-				this.inventory.remove(name);
 			}
 			case "right" -> {
 				if (length + start[0] > 9) return false;
 				for (int i = 0; i < length; i++) {
-					this.map[start[0]][start[1] + i] = '^';
+					this.myMap[start[0]][start[1] + i] = ship;
 				}
-				this.inventory.remove(name);
 			}
 			default -> {
 			}
 		}
-
 		return true;
 	}
+
+	//fire on another player. both player and enemy will change their maps in response
+	public void fire(int[] target, Game enemyGame){
+		if(enemyGame.getMyMap()[target[0]][target[1]] == ship){
+			enemyGame.setMyMap(target, hit);
+			enemyGame.takeHealth();
+			this.setEnemyMap(target, hit);
+		} else {
+			enemyGame.setMyMap(target, miss);
+			this.setEnemyMap(target, miss);
+		}
+	}
+
+
+
 }

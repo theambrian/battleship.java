@@ -10,18 +10,26 @@ import  GameElements.Ships.*;
 public class GameWindow extends JFrame implements ActionListener {
 
 	private JPanel homePanel, transPanel, setupPanel, playPanel;
-	private JLabel[][] map;
 
 	private int currentPlayer = 1;
-	private Game player1Game, player2Game;
+	private final Game player1Game, player2Game;
 
 	public GameWindow(){
 		//basic initializations
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(150, 100);
-		this.setPreferredSize(new Dimension(400, 500);
+		this.setPreferredSize(new Dimension(400, 500));
 		this.setMinimumSize(new Dimension(100, 125));
 
+		player1Game = new Game();
+		player1Game.addShip(new Cruiser(new int[]{1, 3}, "right"));
+		player1Game.addShip(new Cruiser(new int[]{1, 1}, "down"));
+		player1Game.addShip(new Destroyer(new int[]{4, 4}, "left"));
+		player1Game.addShip(new Carrier(new int[]{5, 4}, "right"));
+		player2Game = new Game();
+
+		playPanel = makePlayPanel();
+		this.add(playPanel);
 		this.pack();
 		this.setVisible(true);
 	}
@@ -30,10 +38,10 @@ public class GameWindow extends JFrame implements ActionListener {
 
 	}
 
-	public void makePlayPanel(){
-		JPanel playPanel = new JPanel();
-		playPanel.setLayout(new GridBagLayout());
+	public JPanel makePlayPanel(){
+		JPanel playPanel = new JPanel(new GridBagLayout());
 		playPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 		GridBagConstraints cons = new GridBagConstraints();
 		cons.anchor = GridBagConstraints.LINE_START;
 		cons.fill = GridBagConstraints.HORIZONTAL;
@@ -41,23 +49,39 @@ public class GameWindow extends JFrame implements ActionListener {
 		cons.weightx = 0.5;
 		cons.insets = new Insets(2, 3, 2, 3);
 
+		Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
+
 
 		//make map
 		{
-			JPanel mapPanel = new JPanel();
-			mapPanel.setLayout(new GridLayout(10, 10));
-			JLabel[][] map = new JLabel[10][10];
-			char[][] gameMap = (currentPlayer == 1) ? player1Game.getMap() : player2Game.getMap();
+			JPanel myMapPanel = new JPanel(new GridLayout(10, 10));
+			JLabel[][] myMap = new JLabel[10][10];
+			char[][] myMapGame = currentGame.getMyMap();
+
+			JPanel enemyMapPanel = new JPanel(new GridLayout(10, 10));
+			JLabel[][] enemyMap = new JLabel[10][10];
+			char[][] enemyMapGame = currentGame.getEnemyMap();
+
 			for (int row = 0; row < 10; row++) {
 				for (int col = 0; col < 10; col++) {
-					map[row][col] = new JLabel(String.valueOf(gameMap[row][col]));
-					mapPanel.add(map[row][col]);
+					myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
+					myMapPanel.add(myMap[row][col]);
+
+					enemyMap[row][col] = new JLabel(String.valueOf(enemyMapGame[row][col]));
+					enemyMapPanel.add(enemyMap[row][col]);
+
 				}
 			}
 
-			cons.gridx = 0; cons.gridy = 0;
-			playPanel.add(mapPanel, cons);
+			cons.gridx = 0;
+			cons.gridy = 0;
+			playPanel.add(enemyMapPanel, cons);
+			cons.gridx = 0;
+			cons.gridy = 1;
+			playPanel.add(myMapPanel, cons);
 		}
+
+			return playPanel;
 	}
 
 
