@@ -33,10 +33,10 @@ public class Game {
 	public char[][] getMyMap(){return this.myMap;}
 	public char[][] getEnemyMap(){return this.enemyMap;}
 	public int getHealth(){return this.health;}
-	public void setMyMap(int[] location, char newStatus){
-		this.myMap[location[0]][location[1]] = newStatus;
+	public void setMyMap(int row, int col, char newStatus){
+		this.myMap[row][col] = newStatus;
 	}
-	public void setEnemyMap(int[] location, char newStatus){this.enemyMap[location[0]][location[1]] = newStatus;}
+	public void setEnemyMap(int row, int col, char newStatus){this.enemyMap[row][col] = newStatus;}
 	public void takeHealth(){this.health--;}
 
 	public boolean addShip(Ship newShip){
@@ -77,14 +77,15 @@ public class Game {
 	}
 
 	//fire on another player. both player and enemy will change their maps in response
-	public void fire(int[] target, Game enemyGame){
-		if(enemyGame.getMyMap()[target[0]][target[1]] == ship){
-			enemyGame.setMyMap(target, hit);
+	public void fire(int row, int col, Game enemyGame){
+		
+		if(enemyGame.getMyMap()[row][col] == ship){
+			enemyGame.setMyMap(row, col, hit);
 			enemyGame.takeHealth();
-			this.setEnemyMap(target, hit);
+			this.setEnemyMap(row, col, hit);
 		} else {
-			enemyGame.setMyMap(target, miss);
-			this.setEnemyMap(target, miss);
+			enemyGame.setMyMap(row, col, miss);
+			this.setEnemyMap(row, col, miss);
 		}
 	}
 

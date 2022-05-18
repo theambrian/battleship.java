@@ -8,9 +8,9 @@ public class GUITools {
 		final char miss = 'o';
 		final char ship = '^';
 
+		original.setFont(new Font("Sans-Serif", Font.BOLD, 14));
 
 		char text = original.getText().charAt(0);
-
 		switch (text) {
 			case water -> {
 				original.setForeground(new Color(137, 207, 240));
@@ -22,7 +22,6 @@ public class GUITools {
 			}
 			case ship -> {
 				original.setForeground(Color.BLACK);
-				original.setFont(new Font("Sans-Serif", Font.BOLD, 14));
 				return original;
 			}
 			default -> {

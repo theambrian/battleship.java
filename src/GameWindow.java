@@ -23,11 +23,11 @@ public class GameWindow extends JFrame implements ActionListener {
 		this.setResizable(false);
 
 		player1Game = new Game();
-		player1Game.addShip(new Cruiser(new int[]{1, 3}, "right"));
-		player1Game.addShip(new Cruiser(new int[]{1, 1}, "down"));
-		player1Game.addShip(new Destroyer(new int[]{4, 8}, "left"));
-		player1Game.addShip(new Submarine(new int[]{0, 0}, "right"));
-		player1Game.addShip(new Carrier(new int[]{5, 2}, "right"));
+		player1Game.addShip(new Cruiser(1, 3, "right"));
+		player1Game.addShip(new Cruiser(1, 1, "down"));
+		player1Game.addShip(new Destroyer(4, 8, "left"));
+		player1Game.addShip(new Submarine(0, 0, "right"));
+		player1Game.addShip(new Carrier(5, 2, "right"));
 		player2Game = new Game();
 
 		playPanel = makePlayPanel();
