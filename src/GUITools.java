@@ -24,10 +24,13 @@ public class GUITools {
 				original.setForeground(Color.BLACK);
 				return original;
 			}
+			case miss -> {
+				original.setForeground(new Color(2, 48, 32));
+			}
 			default -> {
 				return original;
 			}
 		}
-
+		return original;
 	}
 }

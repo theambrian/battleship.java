@@ -9,19 +9,12 @@ import  GameElements.Ships.*;
 
 public class GameWindow extends JFrame implements ActionListener {
 
-	private JPanel homePanel, transPanel, setupPanel, playPanel;
+	private JPanel homePanel, transPanel, setupPanel, playPanel; //largest scene panels
 
 	private int currentPlayer = 1;
 	private Game player1Game, player2Game;
 
 	public GameWindow(){
-		//basic initializations
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocation(150, 100);
-		this.setPreferredSize(new Dimension(400, 500));
-		this.setMinimumSize(new Dimension(100, 125));
-		this.setResizable(false);
-
 		player1Game = new Game();
 		player1Game.addShip(new Cruiser(1, 3, "right"));
 		player1Game.addShip(new Cruiser(1, 1, "down"));
@@ -29,6 +22,20 @@ public class GameWindow extends JFrame implements ActionListener {
 		player1Game.addShip(new Submarine(0, 0, "right"));
 		player1Game.addShip(new Carrier(5, 2, "right"));
 		player2Game = new Game();
+		player2Game.addShip(new Carrier(0, 0, "right"));
+
+
+		guiSetup();
+	}
+
+	public void guiSetup(){
+		//basic initializations
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocation(150, 100);
+		this.setPreferredSize(new Dimension(400, 500));
+		this.setMinimumSize(new Dimension(100, 125));
+		this.setResizable(false);
+		this.setLayout(new GridLayout(1,1));
 
 		playPanel = makePlayPanel();
 		this.add(playPanel);
@@ -36,16 +43,26 @@ public class GameWindow extends JFrame implements ActionListener {
 		this.setVisible(true);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent event){
 		String e = event.getActionCommand();
-
+		System.out.println("event performed");
 		switch(e) {
 			case "shot coordinate" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
+				System.out.println(coordinateTextField.getText());
 				String[] locations = coordinateTextField.getText().split(", ", 2);
-				currentGame.fireUpon(Integer.getInteger(locations[0]), Integer.getInteger(locations[1]),enemyGame);
-				enemyGame.takeFire(Integer.getInteger(locations[0]), Integer.getInteger(locations[1]));
+				System.out.println(locations[0] + "+" + locations[1]);
+				currentGame.fireUpon(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]),enemyGame);
+				enemyGame.takeFire(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]));
+				System.out.println(player1Game.getHealth());
+				System.out.println(player2Game.getHealth());
+				this.remove(playPanel);
+				playPanel = makePlayPanel();
+				this.add(playPanel);
+				this.pack();
+				System.out.println("shot");
 			}
 		}
 	}
@@ -101,19 +118,23 @@ public class GameWindow extends JFrame implements ActionListener {
 		{
 			JPanel inputPanel = new JPanel();
 
-			coordinateTextField = new JTextField("Enter target:");
-			coordinateTextField.setSize(new Dimension(60, 10));
+			coordinateTextField = new JTextField();
+			coordinateTextField.setPreferredSize(new Dimension(125, 20));
 			coordinateTextField.setActionCommand("shot coordinate");
+			coordinateTextField.addActionListener(this);
 			inputPanel.add(coordinateTextField);
 			
 			coordinateButton = new JButton("Shoot");
-			coordinateButton.setSize(new Dimension(25,10));
+			coordinateButton.setPreferredSize(new Dimension(40,20));
 			coordinateButton.setActionCommand("shot coordinate");
+			coordinateButton.addActionListener(this);
+			System.out.println(coordinateButton.getActionCommand());
 			inputPanel.add(coordinateButton);
 
 			endTurnButton = new JButton("End Turn");
-			endTurnButton.setSize(new Dimension(10, 10));
+			endTurnButton.setPreferredSize(new Dimension(75, 20));
 			endTurnButton.setActionCommand("end battle turn");
+			endTurnButton.addActionListener(this);
 			inputPanel.add(endTurnButton);
 
 			cons.gridx = 0; cons.gridy = 2;
