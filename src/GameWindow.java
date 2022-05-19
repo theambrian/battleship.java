@@ -46,23 +46,17 @@ public class GameWindow extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event){
 		String e = event.getActionCommand();
-		System.out.println("event performed");
 		switch(e) {
 			case "shot coordinate" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
-				System.out.println(coordinateTextField.getText());
 				String[] locations = coordinateTextField.getText().split(", ", 2);
-				System.out.println(locations[0] + "+" + locations[1]);
 				currentGame.fireUpon(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]),enemyGame);
 				enemyGame.takeFire(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]));
-				System.out.println(player1Game.getHealth());
-				System.out.println(player2Game.getHealth());
 				this.remove(playPanel);
 				playPanel = makePlayPanel();
 				this.add(playPanel);
 				this.pack();
-				System.out.println("shot");
 			}
 		}
 	}
@@ -128,7 +122,6 @@ public class GameWindow extends JFrame implements ActionListener {
 			coordinateButton.setPreferredSize(new Dimension(40,20));
 			coordinateButton.setActionCommand("shot coordinate");
 			coordinateButton.addActionListener(this);
-			System.out.println(coordinateButton.getActionCommand());
 			inputPanel.add(coordinateButton);
 
 			endTurnButton = new JButton("End Turn");
