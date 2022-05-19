@@ -12,7 +12,7 @@ public class GameWindow extends JFrame implements ActionListener {
 	private JPanel homePanel, transPanel, setupPanel, playPanel;
 
 	private int currentPlayer = 1;
-	private final Game player1Game, player2Game;
+	private Game player1Game, player2Game;
 
 	public GameWindow(){
 		//basic initializations
@@ -37,9 +37,21 @@ public class GameWindow extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent event){
+		String e = event.getActionCommand();
 
+		switch(e) {
+			case "shot coordinate" -> {
+				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
+				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
+				String[] locations = coordinateTextField.getText().split(", ", 2);
+				currentGame.fireUpon(Integer.getInteger(locations[0]), Integer.getInteger(locations[1]),enemyGame);
+				enemyGame.takeFire(Integer.getInteger(locations[0]), Integer.getInteger(locations[1]));
+			}
+		}
 	}
 
+	JTextField coordinateTextField;
+	JButton coordinateButton, endTurnButton;
 	public JPanel makePlayPanel(){
 		JPanel playPanel = new JPanel(new GridBagLayout());
 		playPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -89,17 +101,19 @@ public class GameWindow extends JFrame implements ActionListener {
 		{
 			JPanel inputPanel = new JPanel();
 
-			JTextField coordinateTextField = new JTextField("Enter target:");
+			coordinateTextField = new JTextField("Enter target:");
 			coordinateTextField.setSize(new Dimension(60, 10));
 			coordinateTextField.setActionCommand("shot coordinate");
 			inputPanel.add(coordinateTextField);
 			
-			JButton coordinateButton = new JButton("Shoot");
+			coordinateButton = new JButton("Shoot");
 			coordinateButton.setSize(new Dimension(25,10));
+			coordinateButton.setActionCommand("shot coordinate");
 			inputPanel.add(coordinateButton);
 
-			JButton endTurnButton = new JButton("End Turn");
+			endTurnButton = new JButton("End Turn");
 			endTurnButton.setSize(new Dimension(10, 10));
+			endTurnButton.setActionCommand("end battle turn");
 			inputPanel.add(endTurnButton);
 
 			cons.gridx = 0; cons.gridy = 2;
