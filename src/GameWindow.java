@@ -1,44 +1,52 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import GameElements.*;
+import java.io.File;
+import java.io.IOException;
+
 import  GameElements.Ships.*;
 
 public class GameWindow extends JFrame implements ActionListener {
 
 	private JPanel homePanel, transPanel, setupPanel, playPanel; //largest scene panels
 
-	private int currentPlayer = 1;
-	private Game player1Game, player2Game;
+	private int currentPlayer = 1; //-1 for player 2, 1 for player 1
+	private boolean shotFired = false;
+	private final Game player1Game, player2Game;
 
 	public GameWindow(){
 		player1Game = new Game();
+		player2Game = new Game();
+
+		//leave for testing purposes
 		player1Game.addShip(new Cruiser(1, 3, "right"));
 		player1Game.addShip(new Cruiser(1, 1, "down"));
 		player1Game.addShip(new Destroyer(4, 8, "left"));
 		player1Game.addShip(new Submarine(0, 0, "right"));
 		player1Game.addShip(new Carrier(5, 2, "right"));
-		player2Game = new Game();
+
 		player2Game.addShip(new Carrier(0, 0, "right"));
+		//delete once setupPanel is implemented
 
 
 		guiSetup();
 	}
 
-	public void guiSetup(){
+	public void guiSetup() {
 		//basic initializations
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(150, 100);
-		this.setPreferredSize(new Dimension(400, 500));
-		this.setMinimumSize(new Dimension(100, 125));
+		this.setPreferredSize(new Dimension(400, 525));
 		this.setResizable(false);
 		this.setLayout(new GridLayout(1,1));
-
+		this.setTitle("Battleship");
+		this.setIconImage(new ImageIcon("images/icon.png").getImage());
 		playPanel = makePlayPanel();
-		this.add(playPanel);
+		transPanel = makeTransPanel();
+
+		this.setContentPane(playPanel);
 		this.pack();
 		this.setVisible(true);
 	}
@@ -46,16 +54,34 @@ public class GameWindow extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent event){
 		String e = event.getActionCommand();
+
 		switch(e) {
 			case "shot coordinate" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
 				String[] locations = coordinateTextField.getText().split(", ", 2);
-				currentGame.fireUpon(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]),enemyGame);
-				enemyGame.takeFire(Integer.parseInt(locations[1]), Integer.parseInt(locations[0]));
-				this.remove(playPanel);
+				int row = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[1]);
+				int col = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[0]);
+
+				currentGame.fireUpon(row, col, enemyGame);
+				enemyGame.takeFire(row, col);
+				shotFired = true;
+
+
 				playPanel = makePlayPanel();
-				this.add(playPanel);
+				this.setContentPane(playPanel);
+				this.pack();
+			}
+			case "end battle" -> {
+				this.setContentPane(transPanel);
+				this.pack();
+			}
+			case "end transition" -> {
+				currentPlayer *= -1;
+				shotFired = false;
+
+				playPanel = makePlayPanel();
+				this.setContentPane(playPanel);
 				this.pack();
 			}
 		}
@@ -64,6 +90,7 @@ public class GameWindow extends JFrame implements ActionListener {
 	JTextField coordinateTextField;
 	JButton coordinateButton, endTurnButton;
 	public JPanel makePlayPanel(){
+
 		JPanel playPanel = new JPanel(new GridBagLayout());
 		playPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -73,6 +100,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		cons.weighty = 0.5;
 		cons.weightx = 0.5;
 		cons.insets = new Insets(5,5,5,5);
+		cons.ipady = 5;
 
 		Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 
@@ -82,10 +110,12 @@ public class GameWindow extends JFrame implements ActionListener {
 			JPanel myMapPanel = new JPanel(new GridLayout(10, 10));
 			JLabel[][] myMap = new JLabel[10][10];
 			char[][] myMapGame = currentGame.getMyMap();
+			JLabel myMapLabel = new JLabel("Home:");
 
 			JPanel enemyMapPanel = new JPanel(new GridLayout(10, 10));
 			JLabel[][] enemyMap = new JLabel[10][10];
 			char[][] enemyMapGame = currentGame.getEnemyMap();
+			JLabel enemyMapLabel = new JLabel("Enemy:");
 
 			for (int row = 0; row < 10; row++) {
 				for (int col = 0; col < 10; col++) {
@@ -99,43 +129,69 @@ public class GameWindow extends JFrame implements ActionListener {
 
 				}
 			}
-
-			cons.gridx = 0;
-			cons.gridy = 0;
+			cons.gridx = 0; cons.gridy = 0;
+			playPanel.add(enemyMapLabel, cons);
+			cons.gridx = 0; cons.gridy = 1;
 			playPanel.add(enemyMapPanel, cons);
-			cons.gridx = 0;
-			cons.gridy = 1;
+
+			cons.gridx = 0; cons.gridy = 2;
+			playPanel.add(myMapLabel, cons);
+			cons.gridx = 0; cons.gridy = 3;
 			playPanel.add(myMapPanel, cons);
 		}
 
 		//make buttons and text input
 		{
 			JPanel inputPanel = new JPanel();
+			if(!shotFired) {
+				coordinateTextField = new JTextField();
+				coordinateTextField.setPreferredSize(new Dimension(125, 20));
+				coordinateTextField.requestFocusInWindow();
+				coordinateTextField.setActionCommand("shot coordinate");
+				coordinateTextField.addActionListener(this);
+				inputPanel.add(coordinateTextField);
 
-			coordinateTextField = new JTextField();
-			coordinateTextField.setPreferredSize(new Dimension(125, 20));
-			coordinateTextField.setActionCommand("shot coordinate");
-			coordinateTextField.addActionListener(this);
-			inputPanel.add(coordinateTextField);
-			
-			coordinateButton = new JButton("Shoot");
-			coordinateButton.setPreferredSize(new Dimension(40,20));
-			coordinateButton.setActionCommand("shot coordinate");
-			coordinateButton.addActionListener(this);
-			inputPanel.add(coordinateButton);
+				coordinateButton = new JButton("Shoot");
+				coordinateButton.setPreferredSize(new Dimension(80, 20));
+				coordinateButton.setActionCommand("shot coordinate");
+				coordinateButton.addActionListener(this);
+				inputPanel.add(coordinateButton);
+			}
 
 			endTurnButton = new JButton("End Turn");
-			endTurnButton.setPreferredSize(new Dimension(75, 20));
-			endTurnButton.setActionCommand("end battle turn");
+			endTurnButton.setPreferredSize(new Dimension(100, 20));
+			endTurnButton.setActionCommand("end battle");
 			endTurnButton.addActionListener(this);
 			inputPanel.add(endTurnButton);
 
-			cons.gridx = 0; cons.gridy = 2;
+			cons.gridx = 0; cons.gridy = 5;
 			playPanel.add(inputPanel, cons);
 		}
 
 
 		return playPanel;
+	}
+
+	JButton transNextButton;
+	public JPanel makeTransPanel(){
+		JPanel transPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints cons = new GridBagConstraints();
+		cons.fill = GridBagConstraints.NONE;
+		cons.anchor = GridBagConstraints.CENTER;
+
+		JLabel transLabel = new JLabel("Transition");
+		transLabel.setFont(new Font("Sans-Serif", Font.BOLD, 28));
+		cons.gridx = 0; cons.gridy = 0;
+		transPanel.add(transLabel, cons);
+
+		transNextButton = new JButton("Next");
+		transNextButton.setPreferredSize(new Dimension(125, 20));
+		transNextButton.setActionCommand("end transition");
+		transNextButton.addActionListener(this);
+		cons.gridx = 0; cons.gridy = 1;
+		transPanel.add(transNextButton, cons);
+
+		return transPanel;
 	}
 
 
