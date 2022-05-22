@@ -211,7 +211,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		cons.fill = GridBagConstraints.NONE;
 		cons.anchor = GridBagConstraints.CENTER;
 
-		JLabel gameWonLabel = new JLabel("<html>Congratulations Player " + ((currentPlayer == 1) ? 1 : 2) + "!</html>");
+		JLabel gameWonLabel = new JLabel("Congratulations Player " + ((currentPlayer == 1) ? 1 : 2) + "!");
 		gameWonLabel.setFont(new Font("Sans-Serif", Font.BOLD, 28));
 		cons.gridx = 0; cons.gridy = 0;
 		gameWonPanel.add(gameWonLabel, cons);
