@@ -30,17 +30,13 @@ public class Game {
 	public char[][] getMyMap(){return myMap;}
 	public char[][] getEnemyMap(){return enemyMap;}
 	public int getHealth(){return health;}
-	public void setMyMap(int row, int col, char newStatus){
-		myMap[row][col] = newStatus;
-	}
-	public void setEnemyMap(int row, int col, char newStatus){enemyMap[row][col] = newStatus;}
-	public void takeHealth(){health--;}
+	public void setHealth(int n){health = n;} // THIS FUNCTION IS FOR TESTING PURPOSES!!
+										      // IT SHOULD BE REMOVED FOR PRODUCTION
 
 	public boolean addShip(Ship newShip){
 		String orientation = newShip.getOrientation();
 		int[] start = newShip.getStart();
 		int length = newShip.length();
-		String name = newShip.getName();
 
 		switch (orientation) {
 			case "up" -> {
@@ -75,19 +71,15 @@ public class Game {
 
 	//fire on another player. both player and enemy will change their maps in response
 	public void fireUpon(int row, int col, Game enemyGame){
-		if(enemyGame.getMyMap()[row][col] == ship){
-			setEnemyMap(row, col, hit);
-		} else {
-			setEnemyMap(row, col, miss);
-		}
+		enemyMap[row][col] = (enemyGame.getMyMap()[row][col] == ship) ? hit : miss;
 	}
 	
 	public void takeFire(int row, int col){
 		if(getMyMap()[row][col] == ship){
-			setMyMap(row, col, hit);
-			takeHealth();
+			myMap[row][col] = hit;
+			health--;
 		} else {
-			setMyMap(row, col, miss);
+			myMap[row][col] = miss;
 		}
 	}
 

@@ -1,20 +1,17 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-
 import  GameElements.Ships.*;
 
 public class GameWindow extends JFrame implements ActionListener {
 
-	private JPanel homePanel, transPanel, setupPanel, playPanel; //largest scene panels
+	private JPanel homePanel, transPanel, setupPanel, playPanel, gameWonPanel; //scene panels
 
 	private int currentPlayer = 1; //-1 for player 2, 1 for player 1
+	private boolean gameWon = false;
 	private boolean shotFired = false;
-	private final Game player1Game, player2Game;
+	private Game player1Game, player2Game;
 
 	public GameWindow(){
 		player1Game = new Game();
@@ -28,11 +25,13 @@ public class GameWindow extends JFrame implements ActionListener {
 		player1Game.addShip(new Carrier(5, 2, "right"));
 
 		player2Game.addShip(new Carrier(0, 0, "right"));
+		player2Game.setHealth(1);
 		//delete once setupPanel is implemented
 
 
 		guiSetup();
 	}
+
 
 	public void guiSetup() {
 		//basic initializations
@@ -43,6 +42,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		this.setLayout(new GridLayout(1,1));
 		this.setTitle("Battleship");
 		this.setIconImage(new ImageIcon("images/icon.png").getImage());
+
 		playPanel = makePlayPanel();
 		transPanel = makeTransPanel();
 
@@ -56,23 +56,30 @@ public class GameWindow extends JFrame implements ActionListener {
 		String e = event.getActionCommand();
 
 		switch(e) {
-			case "shot coordinate" -> {
+			case "fire" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
-				String[] locations = coordinateTextField.getText().split(", ", 2);
 				int row = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[1]);
 				int col = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[0]);
 
 				currentGame.fireUpon(row, col, enemyGame);
 				enemyGame.takeFire(row, col);
+
+				if(enemyGame.getHealth() == 0) gameWon = true;
+
+				if(gameWon){
+					gameWonPanel = makeGameWonPanel();
+					this.setContentPane(gameWonPanel);
+					this.pack();
+					break;
+				};
+
 				shotFired = true;
-
-
 				playPanel = makePlayPanel();
 				this.setContentPane(playPanel);
 				this.pack();
 			}
-			case "end battle" -> {
+			case "end turn" -> {
 				this.setContentPane(transPanel);
 				this.pack();
 			}
@@ -83,6 +90,9 @@ public class GameWindow extends JFrame implements ActionListener {
 				playPanel = makePlayPanel();
 				this.setContentPane(playPanel);
 				this.pack();
+			}
+			case "reset" -> {
+				this.reset();
 			}
 		}
 	}
@@ -147,20 +157,20 @@ public class GameWindow extends JFrame implements ActionListener {
 				coordinateTextField = new JTextField();
 				coordinateTextField.setPreferredSize(new Dimension(125, 20));
 				coordinateTextField.requestFocusInWindow();
-				coordinateTextField.setActionCommand("shot coordinate");
+				coordinateTextField.setActionCommand("fire");
 				coordinateTextField.addActionListener(this);
 				inputPanel.add(coordinateTextField);
 
-				coordinateButton = new JButton("Shoot");
+				coordinateButton = new JButton("Fire");
 				coordinateButton.setPreferredSize(new Dimension(80, 20));
-				coordinateButton.setActionCommand("shot coordinate");
+				coordinateButton.setActionCommand("fire");
 				coordinateButton.addActionListener(this);
 				inputPanel.add(coordinateButton);
 			}
 
 			endTurnButton = new JButton("End Turn");
 			endTurnButton.setPreferredSize(new Dimension(100, 20));
-			endTurnButton.setActionCommand("end battle");
+			endTurnButton.setActionCommand("end turn");
 			endTurnButton.addActionListener(this);
 			inputPanel.add(endTurnButton);
 
@@ -194,6 +204,34 @@ public class GameWindow extends JFrame implements ActionListener {
 		return transPanel;
 	}
 
+	JButton gameWonHomeButton;
+	public JPanel makeGameWonPanel(){
+		JPanel gameWonPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints cons = new GridBagConstraints();
+		cons.fill = GridBagConstraints.NONE;
+		cons.anchor = GridBagConstraints.CENTER;
+
+		JLabel gameWonLabel = new JLabel("<html>Congratulations Player " + ((currentPlayer == 1) ? 1 : 2) + "!</html>");
+		gameWonLabel.setFont(new Font("Sans-Serif", Font.BOLD, 28));
+		cons.gridx = 0; cons.gridy = 0;
+		gameWonPanel.add(gameWonLabel, cons);
+
+		gameWonHomeButton = new JButton("Home");
+		gameWonHomeButton.setPreferredSize(new Dimension(125, 20));
+		gameWonHomeButton.setActionCommand("reset");
+		gameWonHomeButton.addActionListener(this);
+		cons.gridx = 0; cons.gridy = 1;
+		gameWonPanel.add(gameWonHomeButton, cons);
+
+		return gameWonPanel;
+	}
+
+	public void reset(){
+		player1Game = new Game();
+		player2Game = new Game();
+		this.setContentPane(homePanel);
+		this.pack();
+	}
 
 	public static void main(String[] args) {
 		new GameWindow();
