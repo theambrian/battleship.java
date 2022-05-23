@@ -45,8 +45,9 @@ public class GameWindow extends JFrame implements ActionListener {
 
 		playPanel = makePlayPanel();
 		transPanel = makeTransPanel();
+		homePanel = makeHomePanel();
 
-		this.setContentPane(playPanel);
+		this.setContentPane(homePanel);
 		this.pack();
 		this.setVisible(true);
 	}
@@ -93,6 +94,10 @@ public class GameWindow extends JFrame implements ActionListener {
 			}
 			case "reset" -> {
 				this.reset();
+			}
+			case "play" -> {
+				this.setContentPane(playPanel);
+				this.pack();
 			}
 		}
 	}
@@ -231,6 +236,29 @@ public class GameWindow extends JFrame implements ActionListener {
 		player2Game = new Game();
 		this.setContentPane(homePanel);
 		this.pack();
+	}
+
+	JButton homePlayButton;
+	public JPanel makeHomePanel(){
+		JPanel homePanel = new JPanel(new GridBagLayout());
+		GridBagConstraints cons = new GridBagConstraints();
+		cons.fill = GridBagConstraints.NONE;
+		cons.anchor = GridBagConstraints.CENTER;
+
+		JLabel homeLabel = new JLabel("Battleship");
+		homeLabel.setFont(new Font("Sans-Serif", Font.BOLD, 28));
+		cons.gridx = 0; cons.gridy = 0;
+		homePanel.add(homeLabel, cons);
+
+		homePlayButton = new JButton("Play");
+		homePlayButton.setPreferredSize(new Dimension(125, 20));
+		homePlayButton.setActionCommand("play");
+		homePlayButton.addActionListener(this);
+		cons.insets = new Insets(5, 2, 2, 2);
+		cons.gridx = 0; cons.gridy = 1;
+		homePanel.add(homePlayButton, cons);
+
+		return homePanel;
 	}
 
 	public static void main(String[] args) {

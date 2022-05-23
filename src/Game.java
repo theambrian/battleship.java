@@ -30,10 +30,10 @@ public class Game {
 	public char[][] getMyMap(){return myMap;}
 	public char[][] getEnemyMap(){return enemyMap;}
 	public int getHealth(){return health;}
+	public void setHealth(int n){this.health = n;}
 
 	public boolean addShip(Ship newShip){
 		String orientation = newShip.getOrientation();
-		int[] start = newShip.getStart();
 		int rowNum = newShip.getRow();
 		int colNum = newShip.getCol();
 		int length = newShip.length();

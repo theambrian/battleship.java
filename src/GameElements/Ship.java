@@ -25,7 +25,7 @@ public abstract class Ship {
 	public HashMap<Integer, Boolean> getBody(){return this.body;}
 	public String getOrientation(){return this.orientation;}
 	public int getRow(){return this.row;}
-	public int getRow(){return this.row;}
+	public int getCol(){return this.col;}
 	public String getName() {return name;}
 
 	public void hit(int target){
