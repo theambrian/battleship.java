@@ -4,7 +4,7 @@ battleship.java
 About
 ----------
 Recreating Battleship in Java using Swing.<br>
-2022 APCSA final project.<br>
+2022 APCSA final project.
 
 
 To Play
@@ -12,11 +12,8 @@ To Play
 1. Download and install a JDK for java 18 or newer.<br>
   [OpenJDK](https://jdk.java.net/18/)<br>
   [Oracle JDK](https://www.oracle.com/java/technologies/downloads/)
-  
 2. Go into your terminal and navigate to your install location.
-
-3. Navigate further to the `Battleship/out/artifacts/Battleshp_jar` directory.<br>
-
+3. Navigate further to the `Battleship/out/artifacts/Battleshp_jar` directory.
 4. Run `java -jar Battleship.jar` to play.
 
 #Alternatively, you maybe able to run jars via a graphical file browser.#
