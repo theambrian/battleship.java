@@ -1,4 +1,4 @@
-# battleship
+# battleship.java
 
 ## About
 Recreating Battleship in Java using Swing.<br>
