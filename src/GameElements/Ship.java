@@ -3,29 +3,29 @@ package GameElements;
 import java.util.HashMap;
 public abstract class Ship {
 	private HashMap<Integer, Boolean> body;
-	private int row, col; //starting coordinates for the ship
-	private String orientation; // direction that the ship points, outward from the start.
+	private final int row, col; // starting coordinates for the ship
+	private final String orientation; // direction that the ship points, outward from the start.
 								// up/down/left/right
-	private String name;
+	private final String name;
 
-	public Ship(int length, int row, int col, String orientation, String name){
+	public Ship(int length, int newRow, int newCol, String newOrientation, String newName){
 
-		this.body = new HashMap<>();
+		body = new HashMap<>();
 		for(int i = 0; i < length; i++){
-			this.body.put(i, true);
+			body.put(i, true);
 		}
 
-		this.row = row;
-		this.col = col;
-		this.orientation = orientation;
-		this.name = name;
+		row = newRow;
+		col = newCol;
+		orientation = newOrientation;
+		name = newName;
 	}
 
-	public int length(){return this.body.size();}
-	public HashMap<Integer, Boolean> getBody(){return this.body;}
-	public String getOrientation(){return this.orientation;}
-	public int getRow(){return this.row;}
-	public int getCol(){return this.col;}
+	public int length(){return body.size();}
+	public HashMap<Integer, Boolean> getBody(){return body;}
+	public String getOrientation(){return orientation;}
+	public int getRow(){return row;}
+	public int getCol(){return col;}
 	public String getName() {return name;}
 
 	public void hit(int target){

@@ -2,12 +2,15 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import  GameElements.Ships.*;
 
 public class GameWindow extends JFrame implements ActionListener {
 
 	private JPanel homePanel, transPanel, setupPanel, playPanel, gameWonPanel; //scene panels
 
+	//game fields
 	private int currentPlayer = 1; //-1 for player 2, 1 for player 1
 	private boolean gameWon = false;
 	private boolean shotFired = false;
@@ -16,17 +19,6 @@ public class GameWindow extends JFrame implements ActionListener {
 	public GameWindow(){
 		player1Game = new Game();
 		player2Game = new Game();
-
-		//leave for testing purposes
-		player1Game.addShip(new Cruiser(1, 3, "right"));
-		player1Game.addShip(new Cruiser(1, 1, "down"));
-		player1Game.addShip(new Destroyer(4, 8, "left"));
-		player1Game.addShip(new Submarine(0, 0, "right"));
-		player1Game.addShip(new Carrier(5, 2, "right"));
-
-		player2Game.addShip(new Carrier(0, 0, "right"));
-		player2Game.setHealth(1);
-		//delete once setupPanel is implemented
 
 
 		guiSetup();
@@ -46,6 +38,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		playPanel = makePlayPanel();
 		transPanel = makeTransPanel();
 		homePanel = makeHomePanel();
+		setupPanel = makeSetupPanel();
 
 		this.setContentPane(homePanel);
 		this.pack();
@@ -56,6 +49,7 @@ public class GameWindow extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent event){
 		String e = event.getActionCommand();
 
+		//play panel
 		switch(e) {
 			case "fire" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
@@ -80,10 +74,18 @@ public class GameWindow extends JFrame implements ActionListener {
 				this.setContentPane(playPanel);
 				this.pack();
 			}
-			case "end turn" -> {
+			case "end battle turn" -> {
 				this.setContentPane(transPanel);
 				this.pack();
 			}
+			case "reset" -> {
+				this.reset();
+			}
+
+		}
+
+		//transition screen
+		switch(e){
 			case "end transition" -> {
 				currentPlayer *= -1;
 				shotFired = false;
@@ -92,12 +94,51 @@ public class GameWindow extends JFrame implements ActionListener {
 				this.setContentPane(playPanel);
 				this.pack();
 			}
-			case "reset" -> {
-				this.reset();
-			}
+		}
+
+		//home panel
+		switch(e){
 			case "play" -> {
-				this.setContentPane(playPanel);
+				this.setContentPane(setupPanel);
 				this.pack();
+			}
+		}
+
+		//setup panel
+		switch(e){
+			case "add ship" -> {
+				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
+
+				String[] userIn = setupCoordinateField.getText().split(", ", 4);
+				
+				String orientation = userIn[3];
+				int row = Integer.parseInt(userIn[2]);
+				int col = Integer.parseInt(userIn[1]);
+				String name = userIn[0];
+
+
+				if(!currentGame.addShip(name, row, col, orientation)){}
+				else {
+					currentGame.addShip(name, row, col, orientation);
+				};
+				
+				setupPanel = makeSetupPanel();
+				this.setContentPane(setupPanel);
+				this.pack();
+			}
+			case "end setup turn" -> {
+				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
+
+				if(enemyGame.getInventory().size() > 0){
+					currentPlayer *= -1;
+					setupPanel = makeSetupPanel();
+					this.setContentPane(setupPanel);
+					this.pack();
+				} else {
+					playPanel = makePlayPanel();
+					this.setContentPane(playPanel);
+					this.pack();
+				}
 			}
 		}
 	}
@@ -175,7 +216,7 @@ public class GameWindow extends JFrame implements ActionListener {
 
 			endTurnButton = new JButton("End Turn");
 			endTurnButton.setPreferredSize(new Dimension(100, 20));
-			endTurnButton.setActionCommand("end turn");
+			endTurnButton.setActionCommand("end battle turn");
 			endTurnButton.addActionListener(this);
 			inputPanel.add(endTurnButton);
 
@@ -231,13 +272,6 @@ public class GameWindow extends JFrame implements ActionListener {
 		return gameWonPanel;
 	}
 
-	public void reset(){
-		player1Game = new Game();
-		player2Game = new Game();
-		this.setContentPane(homePanel);
-		this.pack();
-	}
-
 	JButton homePlayButton;
 	public JPanel makeHomePanel(){
 		JPanel homePanel = new JPanel(new GridBagLayout());
@@ -259,6 +293,77 @@ public class GameWindow extends JFrame implements ActionListener {
 		homePanel.add(homePlayButton, cons);
 
 		return homePanel;
+	}
+
+	JTextField setupCoordinateField;
+	JButton endSetupButton;
+	public JPanel makeSetupPanel(){
+		JPanel setupPanel = new JPanel(new GridBagLayout());
+
+		GridBagConstraints cons = new GridBagConstraints();
+		cons.anchor = GridBagConstraints.LINE_START;
+		cons.fill = GridBagConstraints.HORIZONTAL;
+		cons.weighty = 0.5;
+		cons.weightx = 0.5;
+		cons.insets = new Insets(5,5,5,5);
+		cons.ipady = 5;
+
+		Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
+
+		JPanel myMapPanel = new JPanel(new GridLayout(10, 10));
+		JLabel[][] myMap = new JLabel[10][10];
+		char[][] myMapGame = currentGame.getMyMap();
+		JLabel myMapLabel = new JLabel("Home:");
+		for(int row = 0; row < 10; row++){
+			for(int col = 0; col < 10; col++){
+				myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
+				myMap[row][col] = GUITools.setMapColors(myMap[row][col]);
+				myMapPanel.add(myMap[row][col]);
+			}
+		}
+
+		cons.gridx = 0; cons.gridy = 0; cons.anchor = GridBagConstraints.BELOW_BASELINE;
+		setupPanel.add(myMapLabel, cons);
+		cons.gridx = 0; cons.gridy = 1;
+		setupPanel.add(myMapPanel, cons);
+
+
+		ArrayList<String> currentPlayerInv = currentGame.getInventory();
+		JPanel inventoryPanel = new JPanel(new GridLayout(0, 1));
+		for(String ship : currentPlayerInv){
+			inventoryPanel.add(new JLabel("* " + ship));
+		}
+		cons.gridx = 1; cons.gridy = 1;
+		setupPanel.add(inventoryPanel, cons);
+
+		JPanel inputPanel = new JPanel();
+		if(currentPlayerInv.size() > 0){
+			setupCoordinateField = new JTextField();
+			setupCoordinateField.requestFocusInWindow();
+			setupCoordinateField.setPreferredSize(new Dimension(150, 28));
+			setupCoordinateField.setActionCommand("add ship");
+			setupCoordinateField.addActionListener(this);
+			inputPanel.add(setupCoordinateField);
+		}
+
+		endSetupButton = new JButton("end setup");
+		endSetupButton.setActionCommand("end setup turn");
+		endSetupButton.addActionListener(this);
+		inputPanel.add(endSetupButton);
+
+		cons.gridx = 0; cons.gridy = 2;
+		setupPanel.add(inputPanel, cons);
+
+		return setupPanel;
+	}
+
+
+
+	public void reset(){
+		player1Game = new Game();
+		player2Game = new Game();
+		this.setContentPane(homePanel);
+		this.pack();
 	}
 
 	public static void main(String[] args) {

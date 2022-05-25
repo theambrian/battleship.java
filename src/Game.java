@@ -1,4 +1,9 @@
 import GameElements.*;
+import GameElements.Ships.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class Game {
 	private char[][] myMap; //player's ships. bottom of battleship board
@@ -8,6 +13,7 @@ public class Game {
 	private char miss = 'o';
 	private char ship = '^';
 	private int health; //total health of player's ships.
+	private ArrayList<String> inventory = new ArrayList<>(List.of("destroyer", "cruiser", "submarine", "battleship", "carrier"));
 
 	public Game() {
 		myMap = new char[10][10];
@@ -30,42 +36,68 @@ public class Game {
 	public char[][] getMyMap(){return myMap;}
 	public char[][] getEnemyMap(){return enemyMap;}
 	public int getHealth(){return health;}
-	public void setHealth(int n){this.health = n;}
+	public ArrayList<String> getInventory(){return inventory;}
+	//public void removeInventory(String shipName){inventory.remove(shipName);}
+	public void setHealth(int n){health = n;}
 
-	public boolean addShip(Ship newShip){
-		String orientation = newShip.getOrientation();
-		int rowNum = newShip.getRow();
-		int colNum = newShip.getCol();
-		int length = newShip.length();
+	public boolean addShip(String name, int row, int col, String orientation){
+
+		Ship newShip = null;
+		name = name.toLowerCase(Locale.ROOT);
+
+		switch(name){
+			case "destroyer" -> {
+				newShip = new Destroyer(row, col, orientation);
+			}
+			case "cruiser" ->{
+				newShip = new Cruiser(row, col, orientation);
+			}
+			case "submarine" ->{
+				newShip = new Submarine(row, col, orientation);
+			}
+			case "battleship" ->{
+				newShip = new Battleship(row, col, orientation);
+			}
+			case "carrier" ->{
+				newShip = new Carrier(row, col, orientation);
+			}
+		}
+
+		inventory.remove(name);
+
+		int length = (newShip != null) ? newShip.length() : 0;
 
 		switch (orientation) {
 			case "up" -> {
-				if (length - rowNum < 0) return false;
+				if (row - length < 0) return false;
 				for (int i = 0; i < length; i++) {
-					myMap[rowNum - i][colNum] = ship;
+					myMap[row - i][col] = ship;
 				}
 			}
 			case "down" -> {
-				if (length + rowNum > 9) return false;
+				if (length + row > 9) return false;
 				for (int i = 0; i < length; i++) {
-					myMap[rowNum + i][colNum] = ship;
+					myMap[row + i][col] = ship;
 				}
 			}
 			case "left" -> {
-				if (length - colNum > 0) return false;
+				if (length - col > 0) return false;
 				for (int i = 0; i < length; i++) {
-					myMap[rowNum][colNum - i] = ship;
+					myMap[row][col - i] = ship;
 				}
 			}
 			case "right" -> {
-				if (length + colNum > 9) return false;
+				if (length + col > 9) return false;
 				for (int i = 0; i < length; i++) {
-					myMap[rowNum][colNum + i] = ship;
+					myMap[row][col + i] = ship;
 				}
 			}
 			default -> {
 			}
 		}
+
+		inventory.remove(name);
+
 		return true;
 	}
 
