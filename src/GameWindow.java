@@ -40,7 +40,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		homePanel = makeHomePanel();
 		setupPanel = makeSetupPanel();
 
-		this.setContentPane(playPanel);
+		this.setContentPane(homePanel);
 		this.pack();
 		this.setVisible(true);
 	}
@@ -169,11 +169,11 @@ public class GameWindow extends JFrame implements ActionListener {
 			for (int row = 0; row < 10; row++) {
 				for (int col = 0; col < 10; col++) {
 					myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
-					myMap[row][col] = GUITools.setMapColors(myMap[row][col]);
+					myMap[row][col] = setMapColors(myMap[row][col]);
 					myMapPanel.add(myMap[row][col]);
 
 					enemyMap[row][col] = new JLabel(String.valueOf(enemyMapGame[row][col]));
-					enemyMap[row][col] = GUITools.setMapColors(enemyMap[row][col]);
+					enemyMap[row][col] = setMapColors(enemyMap[row][col]);
 					enemyMapPanel.add(enemyMap[row][col]);
 
 				}
@@ -315,7 +315,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		for(int row = 0; row < 10; row++){
 			for(int col = 0; col < 10; col++){
 				myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
-				myMap[row][col] = GUITools.setMapColors(myMap[row][col]);
+				myMap[row][col] = setMapColors(myMap[row][col]);
 				myMapPanel.add(myMap[row][col]);
 			}
 		}
@@ -356,14 +356,41 @@ public class GameWindow extends JFrame implements ActionListener {
 
 		return setupPanel;
 	}
-
-
-
+	
 	public void reset(){
 		player1Game = new Game();
 		player2Game = new Game();
 		this.setContentPane(homePanel);
 		this.pack();
+	}
+	
+	public JLabel setMapColors(JLabel original){
+		final char water = '~';
+		final char hit = 'x';
+		final char miss = 'o';
+		final char ship = '^';
+
+		original.setFont(new Font("Sans-Serif", Font.BOLD, 14));
+
+		char text = original.getText().charAt(0);
+		switch (text) {
+			case water -> {
+				original.setForeground(new Color(137, 207, 240));
+				return original;
+			}
+			case hit -> {
+				original.setForeground(Color.RED);
+				return original;
+			}
+			case ship -> {
+				original.setForeground(Color.LIGHT_GRAY);
+				return original;
+			}
+			case miss -> {
+				original.setForeground(Color.WHITE);
+			}
+		}
+		return original;
 	}
 
 	public static void main(String[] args) {
