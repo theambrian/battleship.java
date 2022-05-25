@@ -17,7 +17,6 @@ To Play
 4. Run `java -jar Battleship.jar` to play.
 
 **Alternatively, you maybe able to run jars via a graphical file browser.**
-
 1. Open your file browser and navigate to your install location.
 2. Navigate further to the `Battleship/out/artifacts/Battleship_jar` directory.
 3. Double click on the Battleship.jar file.
