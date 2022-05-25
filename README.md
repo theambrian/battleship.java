@@ -9,7 +9,7 @@ Recreating Battleship in Java using Swing.<br>
 
 To Play
 ----------
-1. Download and install a JDK for java 18 or newer.<br>
+1. Download and install a JDK for Java 18 or newer (You may skip this if you already have Java installed).<br>
   [OpenJDK](https://jdk.java.net/18/)<br>
   [Oracle JDK](https://www.oracle.com/java/technologies/downloads/)
 2. Go into your terminal and navigate to your install location.
