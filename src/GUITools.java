@@ -21,11 +21,11 @@ public class GUITools {
 				return original;
 			}
 			case ship -> {
-				original.setForeground(Color.BLACK);
+				original.setForeground(Color.LIGHT_GRAY);
 				return original;
 			}
 			case miss -> {
-				original.setForeground(new Color(2, 48, 32));
+				original.setForeground(Color.WHITE);
 			}
 		}
 		return original;

@@ -37,7 +37,6 @@ public class Game {
 	public char[][] getEnemyMap(){return enemyMap;}
 	public int getHealth(){return health;}
 	public ArrayList<String> getInventory(){return inventory;}
-	//public void removeInventory(String shipName){inventory.remove(shipName);}
 	public void setHealth(int n){health = n;}
 
 	public boolean addShip(String name, int row, int col, String orientation){
@@ -63,42 +62,36 @@ public class Game {
 			}
 		}
 
-		inventory.remove(name);
-
 		int length = (newShip != null) ? newShip.length() : 0;
 
-		switch (orientation) {
-			case "up" -> {
-				if (row - length < 0) return false;
-				for (int i = 0; i < length; i++) {
-					myMap[row - i][col] = ship;
+		if(newShip != null && newShip.isPlaceable()){
+			switch (orientation) {
+				case "up" -> {
+					for (int i = 0; i < length; i++) {
+						myMap[row - i][col] = ship;
+					}
+				}
+				case "down" -> {
+					for (int i = 0; i < length; i++) {
+						myMap[row + i][col] = ship;
+					}
+				}
+				case "left" -> {
+					for (int i = 0; i < length; i++) {
+						myMap[row][col - i] = ship;
+					}
+				}
+				case "right" -> {
+					for (int i = 0; i < length; i++) {
+						myMap[row][col + i] = ship;
+					}
 				}
 			}
-			case "down" -> {
-				if (length + row > 9) return false;
-				for (int i = 0; i < length; i++) {
-					myMap[row + i][col] = ship;
-				}
-			}
-			case "left" -> {
-				if (length - col > 0) return false;
-				for (int i = 0; i < length; i++) {
-					myMap[row][col - i] = ship;
-				}
-			}
-			case "right" -> {
-				if (length + col > 9) return false;
-				for (int i = 0; i < length; i++) {
-					myMap[row][col + i] = ship;
-				}
-			}
-			default -> {
-			}
+			inventory.remove(name);
+			return true;
 		}
 
-		inventory.remove(name);
-
-		return true;
+		return false;
 	}
 
 	//fire on another player. player will change their view of enemy map in response

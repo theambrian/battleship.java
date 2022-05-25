@@ -20,7 +20,6 @@ public class GameWindow extends JFrame implements ActionListener {
 		player1Game = new Game();
 		player2Game = new Game();
 
-
 		guiSetup();
 	}
 
@@ -34,13 +33,14 @@ public class GameWindow extends JFrame implements ActionListener {
 		this.setLayout(new GridLayout(1,1));
 		this.setTitle("Battleship");
 		this.setIconImage(new ImageIcon("images/icon.png").getImage());
+		this.setBackground(Color.WHITE);
 
 		playPanel = makePlayPanel();
 		transPanel = makeTransPanel();
 		homePanel = makeHomePanel();
 		setupPanel = makeSetupPanel();
 
-		this.setContentPane(homePanel);
+		this.setContentPane(playPanel);
 		this.pack();
 		this.setVisible(true);
 	}
@@ -85,23 +85,19 @@ public class GameWindow extends JFrame implements ActionListener {
 		}
 
 		//transition screen
-		switch(e){
-			case "end transition" -> {
-				currentPlayer *= -1;
-				shotFired = false;
+		if ("end transition".equals(e)) {
+			currentPlayer *= -1;
+			shotFired = false;
 
-				playPanel = makePlayPanel();
-				this.setContentPane(playPanel);
-				this.pack();
-			}
+			playPanel = makePlayPanel();
+			this.setContentPane(playPanel);
+			this.pack();
 		}
 
 		//home panel
-		switch(e){
-			case "play" -> {
-				this.setContentPane(setupPanel);
-				this.pack();
-			}
+		if ("play".equals(e)) {
+			this.setContentPane(setupPanel);
+			this.pack();
 		}
 
 		//setup panel
@@ -117,11 +113,8 @@ public class GameWindow extends JFrame implements ActionListener {
 				String name = userIn[0];
 
 
-				if(!currentGame.addShip(name, row, col, orientation)){}
-				else {
-					currentGame.addShip(name, row, col, orientation);
-				};
-				
+				currentGame.addShip(name, row, col, orientation);
+
 				setupPanel = makeSetupPanel();
 				this.setContentPane(setupPanel);
 				this.pack();
@@ -166,7 +159,7 @@ public class GameWindow extends JFrame implements ActionListener {
 			JPanel myMapPanel = new JPanel(new GridLayout(10, 10));
 			JLabel[][] myMap = new JLabel[10][10];
 			char[][] myMapGame = currentGame.getMyMap();
-			JLabel myMapLabel = new JLabel("Home:");
+			JLabel myMapLabel = new JLabel("Player " + ((currentPlayer == 1) ? 1 : 2) + " Home:");
 
 			JPanel enemyMapPanel = new JPanel(new GridLayout(10, 10));
 			JLabel[][] enemyMap = new JLabel[10][10];
@@ -185,13 +178,18 @@ public class GameWindow extends JFrame implements ActionListener {
 
 				}
 			}
+
+			enemyMapLabel.setFont(new Font("Sans-Serif",Font.BOLD, 14));
 			cons.gridx = 0; cons.gridy = 0;
 			playPanel.add(enemyMapLabel, cons);
+			enemyMapPanel.setBackground(Color.DARK_GRAY);
 			cons.gridx = 0; cons.gridy = 1;
 			playPanel.add(enemyMapPanel, cons);
 
+			myMapLabel.setFont(new Font("Sans-Serif",Font.BOLD, 14));
 			cons.gridx = 0; cons.gridy = 2;
 			playPanel.add(myMapLabel, cons);
+			myMapPanel.setBackground(Color.DARK_GRAY);
 			cons.gridx = 0; cons.gridy = 3;
 			playPanel.add(myMapPanel, cons);
 		}
@@ -313,7 +311,7 @@ public class GameWindow extends JFrame implements ActionListener {
 		JPanel myMapPanel = new JPanel(new GridLayout(10, 10));
 		JLabel[][] myMap = new JLabel[10][10];
 		char[][] myMapGame = currentGame.getMyMap();
-		JLabel myMapLabel = new JLabel("Home:");
+		JLabel myMapLabel = new JLabel("Player " + ((currentPlayer == 1) ? 1 : 2) + " Home:");
 		for(int row = 0; row < 10; row++){
 			for(int col = 0; col < 10; col++){
 				myMap[row][col] = new JLabel(String.valueOf(myMapGame[row][col]));
@@ -322,8 +320,10 @@ public class GameWindow extends JFrame implements ActionListener {
 			}
 		}
 
+		myMapLabel.setFont(new Font("Sans-Serif", Font.BOLD, 14));
 		cons.gridx = 0; cons.gridy = 0; cons.anchor = GridBagConstraints.BELOW_BASELINE;
 		setupPanel.add(myMapLabel, cons);
+		myMapPanel.setBackground(Color.DARK_GRAY);
 		cons.gridx = 0; cons.gridy = 1;
 		setupPanel.add(myMapPanel, cons);
 
