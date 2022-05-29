@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -22,7 +23,6 @@ public class GameWindow extends JFrame implements ActionListener {
 
 		guiSetup();
 	}
-
 
 	public void guiSetup() {
 		//basic initializations
@@ -139,7 +139,6 @@ public class GameWindow extends JFrame implements ActionListener {
 	JTextField coordinateTextField;
 	JButton coordinateButton, endTurnButton;
 	public JPanel makePlayPanel(){
-
 		JPanel playPanel = new JPanel(new GridBagLayout());
 		playPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -393,7 +392,5 @@ public class GameWindow extends JFrame implements ActionListener {
 		return original;
 	}
 
-	public static void main(String[] args) {
-		new GameWindow();
-	}
+	public static void main(String[] args) { new GameWindow(); }
 }

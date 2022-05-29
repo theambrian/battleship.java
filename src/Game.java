@@ -1,5 +1,4 @@
-import GameElements.*;
-import GameElements.Ships.*;
+import GameElements.*; import GameElements.Ships.*;
 
 import java.util.ArrayList;
 import java.util.List;
