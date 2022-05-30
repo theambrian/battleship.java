@@ -54,8 +54,11 @@ public class GameWindow extends JFrame implements ActionListener {
 			case "fire" -> {
 				Game currentGame = (currentPlayer == 1) ? player1Game : player2Game;
 				Game enemyGame = (currentPlayer == 1) ? player2Game : player1Game;
-				int row = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[1]);
-				int col = Integer.parseInt(coordinateTextField.getText().split(", ", 2)[0]);
+
+				String[] userIn = coordinateTextField.getText().split(", ", 2);
+
+				int row = Integer.parseInt(userIn[1]);
+				int col = Integer.parseInt(userIn[0]);
 
 				currentGame.fireUpon(row, col, enemyGame);
 				enemyGame.takeFire(row, col);

@@ -5,14 +5,20 @@ import java.util.List;
 import java.util.Locale;
 
 public class Game {
-	private char[][] myMap; //player's ships. bottom of battleship board
-	private char[][] enemyMap; //what the player knows about enemy's ship. top of battleship board.
-	private char water = '~';
-	private char hit = 'x';
-	private char miss = 'o';
-	private char ship = '^';
-	private int health; //total health of player's ships.
-	private ArrayList<String> inventory = new ArrayList<>(List.of("destroyer", "cruiser", "submarine", "battleship", "carrier"));
+
+	//map info
+	private final char water = '~';
+	private final char hit = 'x';
+	private final char miss = 'o';
+	private final char ship = '^';
+	private final char[][] myMap;
+	private final char[][] enemyMap;
+
+	//game info
+	private int health;
+	private ArrayList<String> inventory = new ArrayList<>
+			(List.of("destroyer", "cruiser", "submarine", "battleship", "carrier"));
+
 
 	public Game() {
 		myMap = new char[10][10];
@@ -99,7 +105,7 @@ public class Game {
 	}
 	
 	public void takeFire(int row, int col){
-		if(getMyMap()[row][col] == ship){
+		if(myMap[row][col] == ship){
 			myMap[row][col] = hit;
 			health--;
 		} else {

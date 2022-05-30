@@ -2,10 +2,12 @@ package GameElements;
 
 
 public abstract class Ship {
-	private final int row, col; // starting coordinates for the ship
+	private final int row, col;
 	private final int length;
-	private final String orientation; // direction that the ship points, outward from the start.
-									  // up/down/left/right
+
+	// direction that the ship points, outward from the start.
+	// "up" | "down" | "left" | "right"
+	private final String orientation;
 
 	public Ship(int newLength, int newRow, int newCol, String newOrientation){
 
