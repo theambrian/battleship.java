@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import  GameElements.Ships.*;
 
 public class GameWindow extends JFrame implements ActionListener {
 
