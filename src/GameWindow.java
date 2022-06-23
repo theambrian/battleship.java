@@ -5,6 +5,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+import Game.java;
+import GameElements.*;
+import GameElements.Ships.*;
+
 
 public class GameWindow extends JFrame implements ActionListener {
 
@@ -38,10 +42,6 @@ public class GameWindow extends JFrame implements ActionListener {
 		transPanel = makeTransPanel();
 		homePanel = makeHomePanel();
 		setupPanel = makeSetupPanel();
-
-		this.setContentPane(homePanel);
-		this.pack();
-		this.setVisible(true);
 	}
 
 	@Override
@@ -161,7 +161,6 @@ public class GameWindow extends JFrame implements ActionListener {
 			JLabel[][] myMap = new JLabel[10][10];
 			char[][] myMapGame = currentGame.getMyMap();
 			JLabel myMapLabel = new JLabel("Player " + ((currentPlayer == 1) ? 1 : 2) + " Home:");
-
 			JPanel enemyMapPanel = new JPanel(new GridLayout(10, 10));
 			JLabel[][] enemyMap = new JLabel[10][10];
 			char[][] enemyMapGame = currentGame.getEnemyMap();
@@ -395,4 +394,5 @@ public class GameWindow extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) { new GameWindow(); }
+	
 }
